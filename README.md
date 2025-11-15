@@ -1,4 +1,4 @@
-# Career Connect Hub
+# TalentBridge  
 
 This project is a web application designed to connect job seekers with employers.
 
