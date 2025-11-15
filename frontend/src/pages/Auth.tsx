@@ -148,7 +148,7 @@ export default function Auth() {
       
       <Card className="w-full max-w-md shadow-hero-glow">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">JobConnect</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">TalentBridge</CardTitle>
           <CardDescription className="text-center">
             Connect with opportunities or find the perfect candidate
           </CardDescription>
