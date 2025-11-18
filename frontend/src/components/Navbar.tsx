@@ -27,6 +27,7 @@ export const Navbar = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("onAuthStateChange", session);
       setSession(session);
     });
 
@@ -34,8 +35,14 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
+    console.log("Logging out...");
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error logging out:", error);
+    } else {
+      console.log("Logged out successfully");
+      navigate("/auth");
+    }
   };
 
   const jobCategories = [
