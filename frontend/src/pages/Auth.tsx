@@ -360,7 +360,7 @@ export default function Auth() {
                   type="password"
                   placeholder="Password"
                   value={signUpData.password}
-                  onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
+                  onChange={(e) => setSignUpData({ ...signUpData, password: e.garget.value })}
                   required
                   className="h-12"
                 />
@@ -416,3 +416,41 @@ export default function Auth() {
     </div>
   );
 }
+
+// On session recovery, check for pending role and create profile
+const checkPendingRole = async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  const pendingRole = localStorage.getItem('pending_role');
+
+  if (session?.user && pendingRole) {
+    // Check if a profile already exists
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', session.user.id)
+      .single();
+
+    if (!existingProfile) {
+      // Create profile
+      const { error } = await supabase.from('profiles').insert({
+        id: session.user.id,
+        role: pendingRole,
+        full_name: session.user.user_metadata.full_name || session.user.email,
+      });
+
+      if (error) {
+        toast.error(`Failed to set role: ${error.message}`);
+      } else {
+        toast.success("Role assigned successfully!");
+      }
+    }
+    
+    localStorage.removeItem('pending_role');
+  }
+};
+
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_IN") {
+    checkPendingRole();
+  }
+});
